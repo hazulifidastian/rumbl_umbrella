@@ -1,38 +1,50 @@
 defmodule InfoSys.Counter do
-  def inc(pid), do: send(pid, :inc)
+  use GenServer
 
-  def dec(pid), do: send(pid, :dec)
+  def inc(pid), do: GenServer.cast(pid, :inc)
 
-  def val(pid, timeout \\ 5_000) do
-    ref = make_ref()
-    send(pid, {:val, self(), ref})
-    # waiting response
-    receive do
-      {^ref, val} -> val
-    after
-      timeout -> exit(:timeout)
-    end
+  def dec(pid), do: GenServer.cast(pid, :dec)
+
+  def val(pid) do
+    GenServer.call(pid, :val)
   end
 
   def start_link(initial_val) do
-    {:ok, spawn_link(fn -> listen(initial_val) end)}
+    GenServer.start_link(__MODULE__, initial_val)
   end
 
-  defp listen(val) do
-    # val adalah state
-    receive do
-      :inc ->
-        # state berubah
-        listen(val + 1)
-
-      :dec ->
-        # state berubah
-        listen(val - 1)
-
-      {:val, sender, ref} ->
-        send(sender, {ref, val})
-        # state tetap
-        listen(val)
-    end
+  def init(initial_value) do
+    Process.send_after(self(), :tick, 1_000)
+    {:ok, initial_value}
   end
+
+  def handle_info(:tick, val) when val <= 0, do: raise("boom!")
+
+  def handle_info(:tick, val) do
+    IO.puts("tick #{val}")
+    Process.send_after(self(), :tick, 1_000)
+    {:noreply, val - 1}
+  end
+
+  def handle_cast(:inc, val) do
+    {:noreply, val + 1}
+  end
+
+  def handle_cast(:dec, val) do
+    {:noreply, val - 1}
+  end
+
+  def handle_call(:val, _from, val) do
+    {:reply, val, val}
+  end
+
+  # def child_spec(arg) do
+  #   %{
+  #     id: __MODULE__,
+  #     start: {__MODULE__, :start_link, [arg]},
+  #     restart: :temporary,
+  #     shutdown: 5_000,
+  #     type: :worker
+  #   }
+  # end
 end
