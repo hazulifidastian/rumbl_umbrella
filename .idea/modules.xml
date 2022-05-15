@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/apps/info_sys/info_sys.iml" filepath="$PROJECT_DIR$/apps/info_sys/info_sys.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apps/rumbl/rumbl.iml" filepath="$PROJECT_DIR$/apps/rumbl/rumbl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rumbl_umbrella.iml" filepath="$PROJECT_DIR$/rumbl_umbrella.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apps/rumbl_web/rumbl_web.iml" filepath="$PROJECT_DIR$/apps/rumbl_web/rumbl_web.iml" />
+    </modules>
+  </component>
+</project>
